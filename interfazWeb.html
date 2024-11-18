@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extracción de Información de Prospectos Médicos</title>
+    <link rel="stylesheet" href="interfazWeb.css">
+
+</head>
+<body>
+
+    <div class="container">
+        <h1>Extracción de Prospecto Médico</h1>
+        <input type="file" id="imageInput" accept="image/*">
+        <button class="upload-btn" onclick="extractInfo()">Extraer Información</button>
+        
+        <div class="result" id="resultContainer">
+            <h2>Resultado:</h2>
+            <textarea id="resultText" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        function extractInfo() {
+            const imageInput = document.getElementById('imageInput');
+            const resultContainer = document.getElementById('resultContainer');
+            const resultText = document.getElementById('resultText');
+
+            if (!imageInput.files.length) {
+                alert("Por favor, sube una imagen.");
+                return;
+            }
+
+            // Aquí iría el código de procesamiento de la imagen y extracción de texto
+            // Simulando resultado de texto extraído
+
+            const extractedText = "Ejemplo de información extraída del prospecto médico."; //sustituir pr el texto que genere el 2o modelo
+            
+            // Mostrar el resultado
+            resultText.value = extractedText;
+            resultContainer.style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>
