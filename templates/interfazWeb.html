@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPT-ProspectosMédicos-1.0</title>
+    <link rel="stylesheet" href="../static/interfazWeb.css">
+
+</head>
+<body>
+    <h1>Sube la/s imágen/es del prospecto médico</h1>
+    <form id="upload-form" action="/upload" method="POST" enctype="multipart/form-data">
+        <label for="file">Selecciona una o más imágenes:</label>
+        <input type="file" id="file" name="file" multiple="multiple" accept="image/*">
+        <button type="submit">Subir</button>
+    </form>
+
+    <h2>Resultados:</h2>
+    <div id="resultado">
+        <p id="resultado-texto">Aquí aparecerá la información extraída por el modelo.</p>
+    </div>
+
+    <script>
+        document.getElementById("upload-form").addEventListener("submit", async function (event) {
+            event.preventDefault();  // Evitar que la página se recargue
+    
+            const formData = new FormData(this);
+            const resultadoDiv = document.getElementById("resultado");
+    
+            // Mostrar indicador de carga
+            resultadoDiv.innerHTML = `<p class="loading">Procesando imágenes, por favor espera...</p>`;
+    
+            try {
+                // Hacer la solicitud al servidor
+                const response = await fetch("/upload", {
+                    method: "POST",
+                    body: formData
+                });
+    
+                // Verificar si hubo algún error en la respuesta
+                if (!response.ok) {
+                    throw new Error(`Error en la respuesta del servidor: ${response.statusText}`);
+                }
+    
+                // Procesar los datos JSON recibidos
+                const data = await response.json();
+                console.log("Datos recibidos del servidor:", data);
+    
+                if (data.status === "success") {
+                    // Extraer el resultado consolidado
+                    const nombreMed = data.nombre_medicamento;
+                    const principioActivo = data.principio_activo;
+                    const dosisRecomendada = data.dosis_recomendada;
+                    const posiblesEfectos = data.posibles_efectos;
+                    resultadoDiv.innerHTML = `
+                        <p><strong>Nombre del medicamento:</strong> ${nombreMed}</p>
+                        <p><strong>Principio activo:</strong> ${principioActivo}</p>
+                        <p><strong>Posibles efectos adversos:</strong> ${posiblesEfectos}</p>
+                        <p><strong>Dosis recomendada:</strong> ${dosisRecomendada}</p>
+                    `;
+                } else if (data.error) {
+                    resultadoDiv.innerHTML = `<p class="error">Error: ${data.error}</p>`;
+                } else {
+                    resultadoDiv.innerHTML = `<p class="error">Ocurrió un error desconocido.</p>`;
+                }
+            } catch (error) {
+                // Manejar errores durante la solicitud
+                resultadoDiv.innerHTML = `<p class="error">Error al procesar las imágenes: ${error.message}</p>`;
+                console.error("Error durante la solicitud:", error); // Depuración
+            }
+        });
+    </script>
+    
+</body>
+</html>
