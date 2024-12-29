@@ -1,2 +1,2 @@
 # QualentumBootcamp_TrabajoFinal_PabloSalcedo
-Trabajo final del bootcsmp de IA de Pablo Salcedo
+Trabajo final del bootcamp de IA de Pablo Salcedo

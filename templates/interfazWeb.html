@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GPT-ProspectosMédicos-1.0</title>
     <link rel="stylesheet" href="../static/interfazWeb.css">
-
 </head>
 <body>
-    <h1>Sube la/s imágen/es del prospecto médico</h1>
+    <h1>Sube las imágenes del prospecto médico</h1>
     <form id="upload-form" action="/upload" method="POST" enctype="multipart/form-data">
         <label for="file">Selecciona una o más imágenes:</label>
         <input type="file" id="file" name="file" multiple="multiple" accept="image/*">
@@ -47,22 +46,49 @@
                 console.log("Datos recibidos del servidor:", data);
     
                 if (data.status === "success") {
-                    // Extraer el resultado consolidado
+                    // Extraer los resultados del JSON
                     const nombreMed = data.nombre_medicamento;
                     const principioActivo = data.principio_activo;
                     const dosisRecomendada = data.dosis_recomendada;
                     const posiblesEfectos = data.posibles_efectos;
+
+                    let efectosHTML = "<ul>";
+                    if (typeof posiblesEfectos === "object" && posiblesEfectos !== null) {
+                        // Definir el orden deseado de las categorías
+                        const ordenCategorias = [
+                            "Muy frecuentes",
+                            "Frecuentes",
+                            "Poco frecuentes",
+                            "Raros",
+                            "Muy raros",
+                            "Frecuencia no conocida",
+                            "Frecuencia desconocida"
+                        ];
+
+                        // Recorrer las categorías en el orden definido
+                        ordenCategorias.forEach(categoria => {
+                            const efectos = posiblesEfectos[categoria] || "Información no disponible";
+                            efectosHTML += `<li><strong>${categoria}:</strong> ${efectos}</li>`;
+                        });
+                    } else {
+                        // Manejar el caso en el que `posiblesEfectos` no sea un objeto válido
+                        efectosHTML += `<li>Información no disponible</li>`;
+                    }
+                    efectosHTML += "</ul>";
+
+
                     resultadoDiv.innerHTML = `
                         <p><strong>Nombre del medicamento:</strong> ${nombreMed}</p>
                         <p><strong>Principio activo:</strong> ${principioActivo}</p>
-                        <p><strong>Posibles efectos adversos:</strong> ${posiblesEfectos}</p>
                         <p><strong>Dosis recomendada:</strong> ${dosisRecomendada}</p>
+                        <p><strong>Posibles efectos adversos:</strong> ${efectosHTML}</p>
                     `;
                 } else if (data.error) {
                     resultadoDiv.innerHTML = `<p class="error">Error: ${data.error}</p>`;
                 } else {
                     resultadoDiv.innerHTML = `<p class="error">Ocurrió un error desconocido.</p>`;
                 }
+
             } catch (error) {
                 // Manejar errores durante la solicitud
                 resultadoDiv.innerHTML = `<p class="error">Error al procesar las imágenes: ${error.message}</p>`;
@@ -70,6 +96,5 @@
             }
         });
     </script>
-    
 </body>
 </html>

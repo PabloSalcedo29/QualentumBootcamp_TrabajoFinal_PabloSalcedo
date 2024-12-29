@@ -67,10 +67,10 @@ def upload_file():
 
     try:
         resultado_nlp = procesar_texto_completo(texto_extraido)
-        nombre_medicamento = resultado_nlp.get("resultado", {}).get("Nombre", "Información no disponible")
+        nombre_medicamento = resultado_nlp.get("resultado", {}).get("Nombre del medicamento", "Información no disponible")
         principio_activo = resultado_nlp.get("resultado", {}).get("Principio activo", "Información no disponible")
         dosis_recomendada = resultado_nlp.get("resultado", {}).get("Dosis recomendada", "Información no disponible")
-        posibles_efectos = resultado_nlp.get("resultado", {}).get("Posibles efectos", "Información no disponible")
+        posibles_efectos = resultado_nlp.get("resultado", {}).get("Posibles efectos adversos", "Información no disponible")
     except Exception as e:
         return jsonify({"error": f"Error al procesar el texto con el modelo NLP: {str(e)}"}), 500
 
