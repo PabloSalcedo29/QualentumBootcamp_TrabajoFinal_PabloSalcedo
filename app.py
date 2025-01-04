@@ -7,7 +7,7 @@ from modeloNLP import procesar_texto_completo
 app = Flask(__name__)
 
 UPLOAD_FOLDER = 'imagenes_prospectos_medicos'
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 MAX_FILE_SIZE_MB = 5  # Límite de tamaño de archivo en MB
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -15,7 +15,6 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
     
-
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -53,18 +52,17 @@ def upload_file():
         else:
             return jsonify({"error": f"Archivo con formato no válido: {archivo.filename}"}), 400
 
+    # PROCESAMIENTO DE IMAGENES CON OCR
     try:
-        # Procesar con OCR
         resultado_ocr = procesar_imagenes(archivos_guardados)
         texto_extraido = resultado_ocr["texto_combinado"]
-        print("ocr done")
-        #print(f"Texto extraído del OCR:\n{texto_extraido}")
 
         if not texto_extraido.strip():
             raise ValueError("No se pudo extraer texto válido del prospecto.")
     except Exception as e:
         return jsonify({"error": f"Error al procesar las imágenes con OCR: {str(e)}"}), 500
-
+    
+    # PROCESAMIENTO DE TEXTO CON NLP
     try:
         resultado_nlp = procesar_texto_completo(texto_extraido)
         nombre_medicamento = resultado_nlp.get("resultado", {}).get("Nombre del medicamento", "Información no disponible")

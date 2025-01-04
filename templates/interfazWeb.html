@@ -27,7 +27,7 @@
             const resultadoDiv = document.getElementById("resultado");
     
             // Mostrar indicador de carga
-            resultadoDiv.innerHTML = `<p class="loading">Procesando imágenes, por favor espera...</p>`;
+            resultadoDiv.innerHTML = `<p class="loading">Procesando imágenes...</p>`;
     
             try {
                 // Hacer la solicitud al servidor
@@ -36,7 +36,7 @@
                     body: formData
                 });
     
-                // Verificar si hubo algún error en la respuesta
+                // Verificar si hay error en la respuesta
                 if (!response.ok) {
                     throw new Error(`Error en la respuesta del servidor: ${response.statusText}`);
                 }
@@ -54,7 +54,7 @@
 
                     let efectosHTML = "<ul>";
                     if (typeof posiblesEfectos === "object" && posiblesEfectos !== null) {
-                        // Definir el orden deseado de las categorías
+                        // Definir el orden de las categorías
                         const ordenCategorias = [
                             "Muy frecuentes",
                             "Frecuentes",
